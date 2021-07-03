@@ -10,15 +10,15 @@ import { AuthorsResolver } from './authors.resolver';
     GraphQLModule.forRoot({
     autoSchemaFile: true
     }), 
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host: "localhost",
-      username: "admin",
-      password: "password1!",
-      database: "App",
-      entities: [],
-      synchronize: true
-    })
+    // TypeOrmModule.forRoot({
+    //   type: "postgres",
+    //   host: "localhost",
+    //   username: "admin",
+    //   password: "password1!",
+    //   database: "App",
+    //   entities: [],
+    //   synchronize: true
+    // })
 ],
   controllers: [AppController],
   providers: [AppService, AuthorsResolver],
