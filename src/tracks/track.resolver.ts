@@ -20,8 +20,9 @@ export class AddTrackInput {
 @Resolver(() => Track)
 export class TrackResolver {
   @Query(() => [Track])
-  tracks() {
-    return this.trackService.tracks.slice();
+  tracks(@Args('q', { nullable: true }) q: string) {
+    if (!q) return this.trackService.tracks.slice()
+    return this.trackService.searchByName(q);
   }
 
   @Mutation(() => Track)
