@@ -1,34 +1,35 @@
 import { Args, Int, Query, Resolver } from "@nestjs/graphql";
 import { Author } from "./models/author.model";
 
-const authorsModel: Author[] = [{
+const authorsModel: Author[] = [
+  {
     id: 1,
-    firstName: "Jacopo"
-}]
+    firstName: "Jacopo",
+  },
+];
 
-@Resolver(of => Author)
+@Resolver((of) => Author)
 export class AuthorsResolver {
-  constructor(
-  ) {}
+  constructor() {}
 
   @Query(() => Author)
-  async author(@Args('id', { type: () => Int }) id: number) {
-    return authorsModel.find(a => a.id == id);
+  async author(@Args("id", { type: () => Int }) id: number) {
+    return authorsModel.find((a) => a.id == id);
   }
 
-  @Query(() => [Author], { name: 'authors'})
+  @Query(() => [Author], { name: "authors" })
   async getAuthors() {
-    return authorsModel.slice()
+    return authorsModel.slice();
   }
 
-//   @Query(returns => [Author])
-//   async authors() {
-//       return [...authorsModel];
-//   }
+  //   @Query(returns => [Author])
+  //   async authors() {
+  //       return [...authorsModel];
+  //   }
 
-//   @ResolveField()
-//   async posts(@Parent() author: Author) {
-//     const { id } = author;
-//     return this.postsService.findAll({ authorId: id });
-//   }
+  //   @ResolveField()
+  //   async posts(@Parent() author: Author) {
+  //     const { id } = author;
+  //     return this.postsService.findAll({ authorId: id });
+  //   }
 }

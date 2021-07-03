@@ -1,3 +1,1 @@
-export const postgresConnection = {
-
-}
+export const postgresConnection = {};
