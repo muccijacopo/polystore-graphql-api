@@ -9,7 +9,7 @@ export class TrackService {
 
   async searchByName(filter: string) {
     if (filter) {
-      const query = "SELECT * FROM tracks WHERE name LIKE $1 ORDER BY name ASC";
+      const query = "SELECT * FROM tracks WHERE name ILIKE $1 ORDER BY name ASC";
       const res = await this.connector
         .getPostgres()
         .query(query, ["%" + filter + "%"]);
