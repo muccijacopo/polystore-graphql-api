@@ -2,8 +2,16 @@ import { Field, Int, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class Track {
-  @Field(() => Int)
-  id: number;
+  @Field()
+  id: string;
   @Field()
   name: string;
+  @Field(() => Int)
+  popularity: number;
+  @Field(() => Int)
+  duration: number;
+  @Field(() => Int)
+  explicit: number;
+  @Field()
+  release_date: string;
 }
