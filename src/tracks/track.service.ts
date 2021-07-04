@@ -44,5 +44,25 @@ export class TrackService {
     return res.rows[0] as Track;
   }
 
+  async playTrack(trackId: string) {
+    const res = await this.connector.getPostgres()
+    .query("UPDATE tracks SET played = played + 1 WHERE id = $1 RETURNING *", [trackId]);
+    const updatedTrack = res.rows[0] as Track;
+    if (updatedTrack) {
+      if (updatedTrack.played > 5) {
+        await this.connector.getMongo().collection("topPlayedTracks").findOneAndUpdate({
+          _id: updatedTrack.id,
+        }, {
+          $set: updatedTrack
+        }, { upsert: true })
+      }
+    }
+    return res.rows[0] as Track;
+  }
+
+  async getTopPlayedTracks() {
+    return this.connector.getMongo().collection("topPlayedTracks").find({}).toArray();
+  }
+
   constructor(private connector: DatabaseConnector) {}
 }

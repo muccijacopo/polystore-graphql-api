@@ -42,6 +42,11 @@ export class TrackResolver {
     return this.trackService.searchByName(q);
   }
 
+  @Query(() => [Track])
+  topPlayedTracks() {
+    return this.trackService.getTopPlayedTracks();
+  }
+
   @ResolveField()
   async artist(@Parent() track: Track) {
     return this.artistService.findArtistById(track.artist_id)

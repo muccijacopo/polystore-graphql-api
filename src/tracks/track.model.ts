@@ -17,6 +17,8 @@ export class Track {
   release_date: string;
   @Field(() => Artist)
   artist: Artist;
+  @Field(() => Int)
+  played: number;
   
   artist_id: string;
 }
