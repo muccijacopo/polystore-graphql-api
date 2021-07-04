@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { DatabaseConnector } from "src/database-connector";
 import { Track } from "./track.model";
 import { AddTrackInput } from "./track.resolver";
 
@@ -6,19 +7,27 @@ import { AddTrackInput } from "./track.resolver";
 export class TrackService {
   tracks: Track[] = [];
 
-  searchByName(query: string) {
-    return this.tracks.filter((track) =>
-      track.name.toLowerCase().includes(query.toLowerCase()),
-    );
+  async searchByName(filter: string) {
+    if (filter) {
+      const query = "SELECT * FROM tracks WHERE name LIKE $1 ORDER BY name ASC"
+      const res = await this.connector
+        .getPostgres()
+        .query(query, ['%' + filter + '%']);
+      return res.rows;
+    } else {
+      const res = await this.connector
+        .getPostgres()
+        .query("SELECT * FROM tracks ORDER BY name ASC");
+      return res.rows;
+    }
   }
 
-  saveNewTrack(data: AddTrackInput): Track {
-    const lastTrackId = this.tracks[this.tracks.length - 1]?.id ?? 0;
-    const newTrack = {
-      id: lastTrackId + 1,
-      name: data.name,
-    };
-    this.tracks.push(newTrack);
-    return newTrack;
+  async saveNewTrack(data: AddTrackInput) {
+    const res = await this.connector
+      .getPostgres()
+      .query("INSERT INTO tracks (name) VALUES ($1) RETURNING *", [data.name]);
+    return res.rows[0] as Track;
   }
+
+  constructor(private connector: DatabaseConnector) {}
 }

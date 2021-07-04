@@ -21,7 +21,6 @@ export class AddTrackInput {
 export class TrackResolver {
   @Query(() => [Track])
   tracks(@Args('q', { nullable: true }) q: string) {
-    if (!q) return this.trackService.tracks.slice()
     return this.trackService.searchByName(q);
   }
 
