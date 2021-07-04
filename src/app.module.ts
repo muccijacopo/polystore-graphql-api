@@ -1,8 +1,7 @@
 import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
-import { AuthorsResolver } from "./authors.resolver";
+
+import { ArtistModule } from "./artists/artist.module";
 import { TrackModule } from "./tracks/track.module";
 
 @Module({
@@ -20,9 +19,10 @@ import { TrackModule } from "./tracks/track.module";
     //   synchronize: true,
     // }),
     TrackModule,
+    ArtistModule
   ],
-  controllers: [AppController],
-  providers: [AppService, AuthorsResolver],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {
   

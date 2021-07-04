@@ -9,10 +9,10 @@ export class TrackService {
 
   async searchByName(filter: string) {
     if (filter) {
-      const query = "SELECT * FROM tracks WHERE name LIKE $1 ORDER BY name ASC"
+      const query = "SELECT * FROM tracks WHERE name LIKE $1 ORDER BY name ASC";
       const res = await this.connector
         .getPostgres()
-        .query(query, ['%' + filter + '%']);
+        .query(query, ["%" + filter + "%"]);
       return res.rows;
     } else {
       const res = await this.connector
@@ -22,10 +22,13 @@ export class TrackService {
     }
   }
 
-  async saveNewTrack(data: AddTrackInput) {
+  async saveNewTrack({ name, popularity, duration, explicit, release_date, artist_id}: AddTrackInput) {
     const res = await this.connector
       .getPostgres()
-      .query("INSERT INTO tracks (name) VALUES ($1) RETURNING *", [data.name]);
+      .query(
+        "INSERT INTO tracks (name, poularity, duration, explicit, release_date, artist_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+        [name, popularity, duration, explicit, release_date, artist_id],
+      );
     return res.rows[0] as Track;
   }
 

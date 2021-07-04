@@ -6,6 +6,7 @@ import {
   InputType,
   Field,
   Int,
+  GraphQLISODateTime
 } from "@nestjs/graphql";
 
 import { Track } from "./track.model";
@@ -15,6 +16,16 @@ import { TrackService } from "./track.service";
 export class AddTrackInput {
   @Field()
   name: string;
+  @Field(() => Int)
+  popularity: number;
+  @Field(() => Int)
+  duration: number;
+  @Field(() => Int)
+  explicit: number;
+  @Field()
+  release_date: string;
+  @Field(() => Int)
+  artist_id: number;
 }
 
 @Resolver(() => Track)
