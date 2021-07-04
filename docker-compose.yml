@@ -3,13 +3,23 @@ services:
     postgres:
         image: postgres
         environment: 
-            POSTGRES_PASSWORD: password1!
             POSTGRES_USER: admin
+            POSTGRES_PASSWORD: password1!
             POSTGRES_DB: App
         volumes: 
             - postgres-data:/var/lib/postgresql/data
         ports: 
             - 5432:5432
+    mongo: 
+        image: mongo
+        environment: 
+            MONGO_INITDB_ROOT_USERNAME: admin
+            MONGO_INITDB_ROOT_PASSWORD: password1!
+        ports: 
+            - 27017:27017
+        volumes: 
+            - mongo-data:/data/db
 
 volumes: 
     postgres-data:
+    mongo-data:
