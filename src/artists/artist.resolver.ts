@@ -1,4 +1,5 @@
-import { Args, Field, InputType, Int, Mutation, Resolver } from "@nestjs/graphql";
+import { Args, Field, InputType, Int, Query, Mutation, Resolver, ResolveField, Parent } from "@nestjs/graphql";
+import { TrackService } from "src/tracks/track.service";
 import { Artist } from "./artist.model";
 import { ArtistService } from "./artist.service";
 
@@ -21,6 +22,17 @@ export class ArtistRevolver {
         return this.artistService.addArtist(data);
     }
 
-    constructor(private artistService: ArtistService) {}
+    @Query(() => [Artist])
+    artists() {
+        return this.artistService.findAllArtists();
+    }
+
+    @ResolveField()
+    tracks(@Parent() artist: Artist) {
+        return this.trackService.findTracksByArtist(artist.id);
+    }
+
+
+    constructor(private artistService: ArtistService, private trackService: TrackService) {}
 
 }

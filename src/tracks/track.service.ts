@@ -22,6 +22,12 @@ export class TrackService {
     }
   }
 
+  async findTracksByArtist(artistId: string) {
+    const res = await this.connector.getPostgres()
+    .query("SELECT * FROM tracks WHERE artist_id = $1", [artistId]);
+    return res.rows as Track[];
+  }
+
   async saveNewTrack({ id,  name, popularity, duration, explicit, release_date, artist_id}: AddTrackInput) {
     const res = await this.connector
       .getPostgres()

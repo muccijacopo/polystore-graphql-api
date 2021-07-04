@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Artist } from "src/artists/artist.model";
 
 @ObjectType()
 export class Track {
@@ -14,4 +15,8 @@ export class Track {
   explicit: number;
   @Field()
   release_date: string;
+  @Field(() => Artist)
+  artist: Artist;
+  
+  artist_id: string;
 }

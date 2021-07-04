@@ -17,5 +17,19 @@ export class ArtistService {
     return res.rows[0] as Artist;
   }
 
+  async findAllArtists() {
+    const res = await this.connector
+      .getPostgres()
+      .query("SELECT * FROM artists");
+    return res.rows as Artist[];
+  }
+
+  async findArtistById(id: string) {
+    const res = await this.connector
+      .getPostgres()
+      .query("SELECT * FROM artists WHERE id = $1", [id]);
+    return res.rows[0] as Artist;
+  }
+
   constructor(private connector: DatabaseConnector) {}
 }

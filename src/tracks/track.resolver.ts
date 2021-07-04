@@ -6,8 +6,13 @@ import {
   InputType,
   Field,
   Int,
-  GraphQLISODateTime
+  GraphQLISODateTime,
+  ResolveField,
+  Parent
 } from "@nestjs/graphql";
+import { StitchingInfo } from "graphql-tools";
+import { Artist } from "src/artists/artist.model";
+import { ArtistService } from "src/artists/artist.service";
 
 import { Track } from "./track.model";
 import { TrackService } from "./track.service";
@@ -37,10 +42,15 @@ export class TrackResolver {
     return this.trackService.searchByName(q);
   }
 
+  @ResolveField()
+  async artist(@Parent() track: Track) {
+    return this.artistService.findArtistById(track.artist_id)
+  }
+
   @Mutation(() => Track)
   addTrack(@Args("data") data: AddTrackInput) {
     return this.trackService.saveNewTrack(data);
   }
 
-  constructor(private trackService: TrackService) {}
+  constructor(private trackService: TrackService, private artistService: ArtistService) {}
 }

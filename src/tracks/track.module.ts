@@ -1,11 +1,12 @@
 import { Module } from "@nestjs/common";
-import { DatabaseConnector } from "src/database-connector";
+
+import { ArtistService } from "src/artists/artist.service";
 import { SharedModule } from "src/shared.module";
 import { TrackResolver } from "./track.resolver";
 import { TrackService } from "./track.service";
 
 @Module({
   imports: [SharedModule],
-  providers: [TrackResolver, TrackService],
+  providers: [TrackResolver, TrackService, ArtistService],
 })
 export class TrackModule {}
