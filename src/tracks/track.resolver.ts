@@ -15,6 +15,8 @@ import { TrackService } from "./track.service";
 @InputType()
 export class AddTrackInput {
   @Field()
+  id: string;
+  @Field()
   name: string;
   @Field(() => Int)
   popularity: number;
@@ -24,8 +26,8 @@ export class AddTrackInput {
   explicit: number;
   @Field()
   release_date: string;
-  @Field(() => Int)
-  artist_id: number;
+  @Field()
+  artist_id: string;
 }
 
 @Resolver(() => Track)

@@ -22,12 +22,14 @@ export class TrackService {
     }
   }
 
-  async saveNewTrack({ name, popularity, duration, explicit, release_date, artist_id}: AddTrackInput) {
+  async saveNewTrack({ id,  name, popularity, duration, explicit, release_date, artist_id}: AddTrackInput) {
     const res = await this.connector
       .getPostgres()
       .query(
-        "INSERT INTO tracks (name, poularity, duration, explicit, release_date, artist_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-        [name, popularity, duration, explicit, release_date, artist_id],
+        "INSERT INTO tracks (id, name, popularity, duration, explicit, release_date, artist_id) \
+        VALUES ($1, $2, $3, $4, $5, $6, $7) \
+        RETURNING *",
+        [id, name, popularity, duration, explicit, release_date, artist_id],
       );
     return res.rows[0] as Track;
   }

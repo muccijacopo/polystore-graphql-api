@@ -2,11 +2,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Pool, Client } from 'pg';
 
 @Injectable()
-export class DatabaseConnector implements OnModuleInit {
+export class DatabaseConnector {
     pool: Pool = null;
     constructor() {}
 
-    onModuleInit() {
+    onApplicationBootstrap() {
         console.log("Starting Database Connections");
         this.startPostgresConnection();
     }
@@ -17,7 +17,8 @@ export class DatabaseConnector implements OnModuleInit {
             user: "admin",
             password: "password1!",
             database: "App",
-      })
+        })
+        console.log("POSTGRES => OK")
     }
 
     getPostgres() {
