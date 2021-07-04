@@ -8,6 +8,10 @@ export class TrackService {
   tracks: Track[] = [];
 
   async searchByName(filter: string) {
+    this.connector.getMongo().collection("searches").insertOne({
+      user: "Jacopo",
+      query: filter
+    });
     if (filter) {
       const query = "SELECT * FROM tracks WHERE name ILIKE $1 ORDER BY name ASC";
       const res = await this.connector
