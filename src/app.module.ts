@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 
 import { ArtistModule } from "./artists/artist.module";
+import { LogModule } from "./actionLogs/log.module";
 import { TrackModule } from "./tracks/track.module";
 
 @Module({
@@ -19,7 +20,8 @@ import { TrackModule } from "./tracks/track.module";
     //   synchronize: true,
     // }),
     TrackModule,
-    ArtistModule
+    ArtistModule,
+    LogModule
   ],
   controllers: [],
   providers: [],

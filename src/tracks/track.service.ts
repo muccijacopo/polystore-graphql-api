@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { DatabaseConnector } from "src/database-connector";
+import { LogService } from "src/actionLogs/log.service";
 import { Track } from "./track.model";
 import { AddTrackInput } from "./track.resolver";
+import { TrackModule } from "./track.module";
 
 @Injectable()
 export class TrackService {
@@ -32,6 +34,11 @@ export class TrackService {
     return res.rows as Track[];
   }
 
+  async findTrackById(trackId: string) {
+    const res = await this.connector.getPostgres().query("SELECT * FROM tracks WHERE id = $1", [trackId])
+    return res.rows[0] as Track;
+  }
+
   async saveNewTrack({ id,  name, popularity, duration, explicit, release_date, artist_id}: AddTrackInput) {
     const res = await this.connector
       .getPostgres()
@@ -57,6 +64,7 @@ export class TrackService {
         }, { upsert: true })
       }
     }
+    this.logService.addLog("Jacopo", "play", trackId);
     return res.rows[0] as Track;
   }
 
@@ -64,5 +72,5 @@ export class TrackService {
     return this.connector.getMongo().collection("topPlayedTracks").find({}).toArray();
   }
 
-  constructor(private connector: DatabaseConnector) {}
+  constructor(private connector: DatabaseConnector, private logService: LogService) {}
 }
