@@ -19,6 +19,10 @@ services:
             - 27017:27017
         volumes: 
             - mongo-data:/data/db
+    redis:
+        image: redis
+        ports:
+            - 6379:6379
 
 volumes: 
     postgres-data:
