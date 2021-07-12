@@ -38,13 +38,18 @@ export class AddTrackInput {
 @Resolver(() => Track)
 export class TrackResolver {
   @Query(() => [Track])
-  tracks(@Args('q', { nullable: true }) q: string) {
-    return this.trackService.searchByName(q);
+  async tracks(@Args('q', { nullable: true }) q: string, @Args('id', { nullable: true }) id: string ) {
+    if (id) {
+      const track = await this.trackService.findTrackById(id);
+      if (!track) return [];
+      return [track];
+    }
+    return await this.trackService.searchByName(q);
   }
 
   @Query(() => [Track])
-  topPlayedTracks() {
-    return this.trackService.getTopPlayedTracks();
+  async topPlayedTracks() {
+    return await this.trackService.getTopPlayedTracks();
   }
 
   @ResolveField()

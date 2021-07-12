@@ -1,17 +1,20 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit, ResponseDecoratorOptions } from '@nestjs/common';
 import * as Postgres from 'pg';
 import * as MongoDB from 'mongodb';
+import * as Redis from 'redis';
 
 @Injectable()
 export class DatabaseConnector {
     pgClient: Postgres.Pool;
     mognoClient: MongoDB.Db;
+    redisClient: Redis.RedisClient;
     constructor() {}
 
     onApplicationBootstrap() {
         console.log("Starting Database Connections");
         this.startPostgresConnection();
         this.startMongoConnection();
+        this.startRedisConnection();
     }
 
     startPostgresConnection() {
@@ -41,11 +44,24 @@ export class DatabaseConnector {
         })
     }
 
+    startRedisConnection() {
+        try {
+            this.redisClient = Redis.createClient();
+            console.log("REDIS => OK")
+        } catch (e) {
+            console.log("REDIS CONNECTION ERROR: ", e);
+        }
+    }
+
     getPostgres() {
         return this.pgClient;
     }
 
     getMongo() {
         return this.mognoClient;
+    }
+
+    getRedis() {
+        return this.redisClient;
     }
 }

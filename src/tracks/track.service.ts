@@ -34,9 +34,20 @@ export class TrackService {
     return res.rows as Track[];
   }
 
-  async findTrackById(trackId: string) {
-    const res = await this.connector.getPostgres().query("SELECT * FROM tracks WHERE id = $1", [trackId])
-    return res.rows[0] as Track;
+  async findTrackById(trackId: string): Promise<Track> {
+    return new Promise((resolve, reject) => {
+      this.connector.getRedis().GET(`track:${trackId}`, async (err, cacheResponse) => {
+        if (err) reject(err);
+        if (cacheResponse) resolve(JSON.parse(cacheResponse) as Track)
+        const freshResponse = await this.connector.getPostgres().query("SELECT * FROM tracks WHERE id = $1", [trackId])
+        if (!freshResponse?.rows.length) {
+          resolve(null);
+          return;
+        }
+        this.connector.getRedis().SETEX(`track:${trackId}`, 30, JSON.stringify(freshResponse.rows[0]))
+        resolve(freshResponse.rows[0] as Track);
+      })
+    })
   }
 
   async saveNewTrack({ id,  name, popularity, duration, explicit, release_date, artist_id}: AddTrackInput) {
