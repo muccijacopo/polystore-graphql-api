@@ -7,6 +7,8 @@ export class Log {
     user: string;
     @Field()
     action: string;
+    @Field({ nullable: true })
+    requestDate: Date;
     @Field(() => Track)
     track: Track;
 

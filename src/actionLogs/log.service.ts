@@ -8,7 +8,8 @@ export class LogService {
         this.connector.getMongo().collection("logs").insertOne({
             user,
             action,
-            trackId
+            trackId,
+            requestDate: new Date()
         });
     }
 

@@ -68,7 +68,7 @@ export class TrackService {
         }, { upsert: true })
       }
     }
-    this.logService.addLog("Jacopo", "play", trackId);
+    // this.logService.addLog("Guest", "play", trackId);
     return res.rows[0] as Track;
   }
 
