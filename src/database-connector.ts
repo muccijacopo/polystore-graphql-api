@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as Postgres from 'pg';
 import * as MongoDB from 'mongodb';
-import * as Redis from 'redis';
-import { promisify } from 'util';
 import { createNodeRedisClient, WrappedNodeRedisClient } from 'handy-redis';
 
 @Injectable()
 export class DatabaseConnector {
     pgClient: Postgres.Pool;
-    mognoClient: MongoDB.Db;
+    mongoClient: MongoDB.Db;
     redisClient: WrappedNodeRedisClient;
     constructor() {}
 
@@ -31,7 +29,7 @@ export class DatabaseConnector {
     }
 
     startMongoConnection() {
-        if (this.mognoClient) return;
+        if (this.mongoClient) return;
         const client = new MongoDB.MongoClient('mongodb://admin:password1!@localhost:27017', {
             useNewUrlParser: true,
             useUnifiedTopology: true
@@ -39,7 +37,7 @@ export class DatabaseConnector {
         client.connect()
         .then(() => {
             console.log("MONGODB => OK");
-            this.mognoClient = client.db("app")
+            this.mongoClient = client.db("app")
         })
         .catch((e) => {
             console.log("MongoDB connection error: ", e);
@@ -60,7 +58,7 @@ export class DatabaseConnector {
     }
 
     getMongo() {
-        return this.mognoClient;
+        return this.mongoClient;
     }
 
     getRedis() {
