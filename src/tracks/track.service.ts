@@ -35,6 +35,7 @@ export class TrackService {
   }
 
   async findTrackById(trackId: string): Promise<Track> {
+    console.log(trackId)
       const cacheResponse = await this.connector.getRedis().get(`track:${trackId}`);
       if (cacheResponse) return JSON.parse(cacheResponse) as Track;
       const freshResponse = await this.connector.getPostgres().query("SELECT * FROM tracks WHERE id = $1", [trackId])
