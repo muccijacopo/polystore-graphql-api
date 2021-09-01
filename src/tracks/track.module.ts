@@ -11,5 +11,6 @@ import { TrackService } from "./track.service";
   controllers: [TrackController],
   imports: [SharedModule],
   providers: [TrackResolver, TrackService, ArtistService, LogService],
+  exports: [TrackService]
 })
 export class TrackModule {}
