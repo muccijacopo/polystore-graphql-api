@@ -8,6 +8,7 @@ import { ArtistService } from './artist.service';
 
 @Module({
     imports: [SharedModule],
-    providers: [ArtistService, ArtistRevolver, TrackService, LogService]
+    providers: [ArtistService, ArtistRevolver, TrackService, LogService],
+    exports: [ArtistService]
 })
 export class ArtistModule {}

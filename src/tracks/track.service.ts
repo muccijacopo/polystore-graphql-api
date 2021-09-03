@@ -48,11 +48,11 @@ export class TrackService {
     const res = await this.connector
       .getPostgres()
       .query(
-        "INSERT INTO tracks (id, name, popularity, duration, explicit, release_date, artist_id) \
-        VALUES ($1, $2, $3, $4, $5, $6, $7) \
+        "INSERT INTO tracks (id, name, popularity, duration, explicit, release_date, artist_id, played) \
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
         RETURNING *",
-        [id, name, popularity, duration, explicit, release_date, artist_id],
-      );
+        [id, name, popularity, duration, explicit, release_date, artist_id, 0],
+      ).catch(() => ({ rows: [null]}))
     return res.rows[0] as Track;
   }
 

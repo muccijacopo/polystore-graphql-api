@@ -13,7 +13,7 @@ export class ArtistService {
         VALUES($1, $2, $3, $4) \
         RETURNING *",
         [id, name, followers, popularity],
-      );
+      ).catch(() => ({ rows: [null]}));
     return res.rows[0] as Artist;
   }
 
