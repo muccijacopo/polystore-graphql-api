@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ConfigModule } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 
 import { ArtistModule } from "./artists/artist.module";
@@ -8,18 +9,10 @@ import { KafkaService } from "./kafka.service";
 
 @Module({
   imports: [
+    ConfigModule.forRoot({}),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),
-    // TypeOrmModule.forRoot({
-    //   type: "postgres",
-    //   host: "localhost",
-    //   username: "admin",
-    //   password: "password1!",
-    //   database: "App",
-    //   entities: [],
-    //   synchronize: true,
-    // }),
     TrackModule,
     ArtistModule,
     LogModule

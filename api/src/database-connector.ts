@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import * as Postgres from 'pg';
 import * as MongoDB from 'mongodb';
 import { createNodeRedisClient, WrappedNodeRedisClient } from 'handy-redis';
-import { envVariables } from 'env';
-import { env } from 'process';
 
 @Injectable()
 export class DatabaseConnector {
@@ -22,17 +20,17 @@ export class DatabaseConnector {
     startPostgresConnection() {
         if (this.pgClient) return;
         this.pgClient = new Postgres.Pool({
-            host: envVariables.postgresHost,
-            user: envVariables.postgresUser,
-            password: envVariables.postgresPassword,
-            database: envVariables.postgresDB,
+            host: process.env.POSTGRES_HOST,
+            user: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DB,
         })
         console.log("POSTGRES => OK")
     }
 
     startMongoConnection() {
         if (this.mongoClient) return;
-        const client = new MongoDB.MongoClient(envVariables.mongoURI, {
+        const client = new MongoDB.MongoClient(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -48,7 +46,7 @@ export class DatabaseConnector {
 
     startRedisConnection() {
         try {
-            this.redisClient = createNodeRedisClient({ host: envVariables.redistHost });
+            this.redisClient = createNodeRedisClient({ host: process.env.REDIS_HOST });
             console.log("REDIS => OK")
         } catch (e) {
             console.log("REDIS CONNECTION ERROR: ", e);
