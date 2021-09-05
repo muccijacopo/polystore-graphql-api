@@ -1,9 +1,5 @@
 version: "3"
 services: 
-    api:
-        build: ./api
-        ports:
-            - "3000:3000"
     postgres:
         image: postgres
         environment: 
@@ -44,7 +40,10 @@ services:
             KAFKA_MESSAGE_MAX_BYTES: 500000000
         depends_on:
         - "zookeeper"
-
+    api:
+        build: ./api
+        ports:
+            - "3000:3000"
 
 volumes: 
     postgres-data:

@@ -12,6 +12,7 @@ export class DatabaseConnector {
 
     onApplicationBootstrap() {
         console.log("Starting Database Connections");
+        console.log(process.env.MONGO_URI)
         this.startPostgresConnection();
         this.startMongoConnection();
         this.startRedisConnection();

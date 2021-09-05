@@ -1,14 +1,10 @@
-FROM node:14-alpine AS build
+FROM node:latest
 
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --only=production
-COPY . ./
+COPY package*.json .
+RUN npm install
+COPY . .
 RUN npm run build
-
-FROM node:14-alpine
-
-WORKDIR /app
-COPY --from=build /app/dist /app/dist
+COPY . . 
 EXPOSE 3000
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/src/main.js"]
