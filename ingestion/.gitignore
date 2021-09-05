@@ -2,3 +2,4 @@ artists.csv
 tracks.csv
 venv
 .idea
+__pycache__
