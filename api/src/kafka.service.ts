@@ -21,13 +21,17 @@ export class KafkaService {
 
     consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        console.log(`${new Date().toISOString()}: Topic: ${topic}, Message: ${message.value.toString()}`);
-        if (topic == 'artists') {
-          const data = JSON.parse(message.value.toString()) as AddArtistInput;
-          await this.artistService.addArtist(data);
-        } else if (topic == 'tracks') {
-          const data = JSON.parse(message.value.toString()) as AddTrackInput;
-          await this.trackService.saveNewTrack(data);
+        try {
+          console.log(`${new Date().toISOString()}: Topic: ${topic}, Message: ${message.value.toString()}`);
+          if (topic == 'artists') {
+            const data = JSON.parse(message.value.toString()) as AddArtistInput;
+            await this.artistService.addArtist(data);
+          } else if (topic == 'tracks') {
+            const data = JSON.parse(message.value.toString()) as AddTrackInput;
+            await this.trackService.saveNewTrack(data);
+          }
+        } catch(e) {
+          console.log(`Processing message error`);
         }
       },
     });
