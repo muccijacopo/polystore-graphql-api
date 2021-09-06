@@ -52,7 +52,9 @@ export class TrackService {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8) \
         RETURNING *",
         [id, name, popularity, duration, explicit, release_date, artist_id, 0],
-      ).catch(() => ({ rows: [null]}))
+      ).catch(() => {
+        return { rows: [null] }
+      });
     return res.rows[0] as Track;
   }
 

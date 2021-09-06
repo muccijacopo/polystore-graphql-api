@@ -16,7 +16,7 @@ def process_artists(broker):
             broker.send_message(topic='artists', value=data)
 
 def process_tracks(broker):
-     for df in pd.read_csv("tracks.csv", chunksize=1000):
+     for df in pd.read_csv("tracks.csv", chunksize=500):
         df: pd.DataFrame = df
         for _, row in df.iterrows():
             data = {
@@ -33,8 +33,8 @@ def process_tracks(broker):
 
 def main():
     broker = KafkaService()
-    process_artists(broker)
-    # process_tracks(broker)
+    # process_artists(broker)
+    process_tracks(broker)
 
 if __name__ == '__main__':
     main()
