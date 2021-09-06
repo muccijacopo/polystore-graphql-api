@@ -21,7 +21,7 @@ export class KafkaService {
 
     consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
-        console.log({ topic, message: message.value.toString() })
+        console.log(`${new Date().toISOString()}: Topic: ${topic}, Message: ${message.value.toString()}`);
         if (topic == 'artists') {
           const data = JSON.parse(message.value.toString()) as AddArtistInput;
           await this.artistService.addArtist(data);
