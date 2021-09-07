@@ -23,13 +23,13 @@ export class ArtistRevolver {
     }
 
     @Query(() => [Artist])
-    artists() {
-        return this.artistService.findAllArtists();
+    artists(@Args('limit', { nullable: true }) limit: number) {
+        return this.artistService.findAllArtists(limit);
     }
 
     @ResolveField()
-    tracks(@Parent() artist: Artist) {
-        return this.trackService.findTracksByArtist(artist.id);
+    tracks(@Parent() artist: Artist, @Args('limit', { nullable: true }) limit: number) {
+        return this.trackService.findTracksByArtist(artist.id, limit);
     }
 
 

@@ -17,10 +17,10 @@ export class ArtistService {
     return res.rows[0] as Artist;
   }
 
-  async findAllArtists() {
+  async findAllArtists(limit: number = 10) {
     const res = await this.connector
       .getPostgres()
-      .query("SELECT * FROM artists");
+      .query("SELECT * FROM artists ORDER BY popularity DESC LIMIT $1", [limit]);
     return res.rows as Artist[];
   }
 

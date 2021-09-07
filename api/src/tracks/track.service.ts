@@ -7,35 +7,33 @@ import { TrackModule } from "./track.module";
 
 @Injectable()
 export class TrackService {
-  tracks: Track[] = [];
 
-  async searchByName(filter: string) {
+  async searchByName(filter: string, limit: number = 10) {
     this.connector.getMongo().collection("searches").insertOne({
       user: "Jacopo",
       query: filter
     });
     if (filter) {
-      const query = "SELECT * FROM tracks WHERE name ILIKE $1 ORDER BY name ASC";
+      const query = "SELECT * FROM tracks WHERE name ILIKE $1 ORDER BY popularity DESC LIMIT $2";
       const res = await this.connector
         .getPostgres()
-        .query(query, ["%" + filter + "%"]);
+        .query(query, ["%" + filter + "%", limit]);
       return res.rows;
     } else {
       const res = await this.connector
         .getPostgres()
-        .query("SELECT * FROM tracks ORDER BY name ASC");
+        .query("SELECT * FROM tracks ORDER BY popularity DESC LIMIT $1", [limit]);
       return res.rows;
     }
   }
 
-  async findTracksByArtist(artistId: string) {
+  async findTracksByArtist(artistId: string, limit: number = 10) {
     const res = await this.connector.getPostgres()
-    .query("SELECT * FROM tracks WHERE artist_id = $1", [artistId]);
+    .query("SELECT * FROM tracks WHERE artist_id = $1 ORDER BY popularity DESC LIMIT $2", [artistId, limit]);
     return res.rows as Track[];
   }
 
   async findTrackById(trackId: string): Promise<Track> {
-    console.log(trackId)
       const cacheResponse = await this.connector.getRedis().get(`track:${trackId}`);
       if (cacheResponse) return JSON.parse(cacheResponse) as Track;
       const freshResponse = await this.connector.getPostgres().query("SELECT * FROM tracks WHERE id = $1", [trackId])

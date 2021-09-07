@@ -38,7 +38,11 @@ export class AddTrackInput {
 @Resolver(() => Track)
 export class TrackResolver {
   @Query(() => [Track])
-  async tracks(@Args('q', { nullable: true }) q: string, @Args('id', { nullable: true }) id: string ) {
+  async tracks(
+      @Args('q', { nullable: true }) q: string, 
+      @Args('id', { nullable: true }) id: string,
+      @Args('limit', { nullable: true }) limit: number
+    ) {
     if (id) {
       const track = await this.trackService.findTrackById(id);
       if (!track) return [];
