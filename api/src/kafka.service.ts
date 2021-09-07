@@ -10,7 +10,7 @@ export class KafkaService {
   async onModuleInit() {
     const kafka = new Kafka({
       clientId: "app",
-      brokers: ["kafka:9092"],
+      brokers: [process.env.KAFKA_BROKER],
       ssl: false,
     });
 

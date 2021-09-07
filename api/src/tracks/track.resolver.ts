@@ -48,7 +48,7 @@ export class TrackResolver {
       if (!track) return [];
       return [track];
     }
-    return await this.trackService.searchByName(q);
+    return await this.trackService.findTracks(q, limit);
   }
 
   @Query(() => [Track])

@@ -8,23 +8,31 @@ import { TrackModule } from "./track.module";
 @Injectable()
 export class TrackService {
 
-  async searchByName(filter: string, limit: number = 10) {
+  async findTracks(filter: string, limit: number = 10) {
     this.connector.getMongo().collection("searches").insertOne({
       user: "Jacopo",
       query: filter
     });
-    if (filter) {
+    const cacheResponse = await this.connector.getRedis().get(`tracks:${filter}:${limit}`);
+    if (cacheResponse) return JSON.parse(cacheResponse);
+
+    const tracks = await (async () => {
+      if (filter) {
       const query = "SELECT * FROM tracks WHERE name ILIKE $1 ORDER BY popularity DESC LIMIT $2";
       const res = await this.connector
         .getPostgres()
         .query(query, ["%" + filter + "%", limit]);
       return res.rows;
-    } else {
-      const res = await this.connector
-        .getPostgres()
-        .query("SELECT * FROM tracks ORDER BY popularity DESC LIMIT $1", [limit]);
-      return res.rows;
-    }
+      } else {
+        const res = await this.connector
+          .getPostgres()
+          .query("SELECT * FROM tracks ORDER BY popularity DESC LIMIT $1", [limit]);
+        return res.rows;
+      }
+    })();
+
+    this.connector.getRedis().setex(`tracks:${filter}:${limit}`, 30, JSON.stringify(tracks));
+    return tracks;
   }
 
   async findTracksByArtist(artistId: string, limit: number = 10) {
