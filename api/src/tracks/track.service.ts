@@ -13,22 +13,16 @@ export class TrackService {
       user: "Jacopo",
       query: filter
     });
+    filter = (filter || "").toLowerCase();
     const cacheResponse = await this.connector.getRedis().get(`tracks:${filter}:${limit}`);
     if (cacheResponse) return JSON.parse(cacheResponse);
 
     const tracks = await (async () => {
-      if (filter) {
       const query = "SELECT * FROM tracks WHERE name ILIKE $1 ORDER BY popularity DESC LIMIT $2";
       const res = await this.connector
         .getPostgres()
-        .query(query, ["%" + filter + "%", limit]);
+        .query(query, [`%${filter}%`, limit]);
       return res.rows;
-      } else {
-        const res = await this.connector
-          .getPostgres()
-          .query("SELECT * FROM tracks ORDER BY popularity DESC LIMIT $1", [limit]);
-        return res.rows;
-      }
     })();
 
     this.connector.getRedis().setex(`tracks:${filter}:${limit}`, 30, JSON.stringify(tracks));
