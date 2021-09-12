@@ -51,9 +51,10 @@ export class TrackResolver {
     return await this.trackService.findTracks(q, limit);
   }
 
-  @Query(() => [Track])
-  async topPlayedTracks() {
-    return await this.trackService.getTopPlayedTracks();
+  @Query(() => [Track]) 
+  async mostPlayedTracksByDate(@Args("date", { nullable: true }) date: Date) {
+    if (!date) date = new Date();
+    return await this.trackService.getMostPlayedTracksByDate(date);
   }
 
   @ResolveField()

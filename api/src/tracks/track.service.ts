@@ -5,6 +5,13 @@ import { Track } from "./track.model";
 import { AddTrackInput } from "./track.resolver";
 import { TrackModule } from "./track.module";
 
+const getYearMonthDayFromDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  return { year, month, day };
+}
+
 @Injectable()
 export class TrackService {
 
@@ -58,25 +65,65 @@ export class TrackService {
     return res.rows[0] as Track;
   }
 
+  async updateMostPlayedTracks(track: Track) {
+    const { year, month, day } = getYearMonthDayFromDate(new Date);
+    const tracksDayPlayedData = await this.connector.getMongo().collection("mostPlayedTracksByDay").findOne({
+      date: `${day}-${month}-${year}`,
+    });
+    if (!tracksDayPlayedData) {
+      this.connector.getMongo().collection("mostPlayedTracksByDay").insert({
+        date: `${day}-${month}-${year}`,
+        tracks: [{
+          ...track,
+          played: 1
+        }]
+      })
+    }
+    const currentTrackPlayedData = await this.connector.getMongo().collection("mostPlayedTracksByDay").findOne({
+      date: `${day}-${month}-${year}`,
+      "tracks.id": track.id,
+    });
+    if (!currentTrackPlayedData) {
+      const updatedTrack = {
+        ...track,
+        played: 1
+      }
+      await this.connector.getMongo().collection("mostPlayedTracksByDay").findOneAndUpdate({
+        date: `${day}-${month}-${year}`
+      }, {
+        $push: { tracks: updatedTrack } 
+      });
+    } else {
+      this.connector.getMongo().collection("mostPlayedTracksByDay").updateOne({
+        date: `${day}-${month}-${year}`,
+        "tracks.id": track.id,
+      }, {
+        $inc: { "tracks.$.played": 1 }
+      })
+    }
+  }
+
   async playTrack(trackId: string) {
     const res = await this.connector.getPostgres()
     .query("UPDATE tracks SET played = played + 1 WHERE id = $1 RETURNING *", [trackId]);
     const updatedTrack = res.rows[0] as Track;
-    if (updatedTrack) {
-      if (updatedTrack.played > 5) {
-        await this.connector.getMongo().collection("topPlayedTracks").findOneAndUpdate({
-          _id: updatedTrack.id,
-        }, {
-          $set: updatedTrack
-        }, { upsert: true })
-      }
-    }
+    this.updateMostPlayedTracks(updatedTrack);
+      // if (updatedTrack.played > 5) {
+      //   await this.connector.getMongo().collection("topPlayedTracks").findOneAndUpdate({
+      //     _id: updatedTrack.id,
+      //   }, {
+      //     $set: updatedTrack
+      //   }, { upsert: true })
+      // }
     // this.logService.addLog("Guest", "play", trackId);
     return res.rows[0] as Track;
   }
 
-  async getTopPlayedTracks() {
-    return this.connector.getMongo().collection("topPlayedTracks").find({}).toArray();
+  async getMostPlayedTracksByDate(date: Date) {
+    const { year, month, day } = getYearMonthDayFromDate(date);
+    return ((await this.connector.getMongo().collection("mostPlayedTracksByDay").findOne({
+      date: `${day}-${month}-${year}`
+    }))?.tracks ?? []) as Track[];
   }
 
   constructor(private connector: DatabaseConnector, private logService: LogService) {}
