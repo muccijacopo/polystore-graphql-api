@@ -33,8 +33,8 @@ def process_tracks(broker):
 
 def main():
     broker = KafkaService()
-    # process_artists(broker)
-    process_tracks(broker)
+    process_artists(broker)
+    # process_tracks(broker)
 
 if __name__ == '__main__':
     main()
