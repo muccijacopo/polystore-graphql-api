@@ -15,7 +15,8 @@ import { KafkaService } from "./kafka.service";
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       playground: true,
-      debug: true
+      debug: true,
+      introspection: true
       
     }),
     TrackModule,
